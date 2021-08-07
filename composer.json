@@ -1,0 +1,24 @@
+{
+  "name": "pbaczek/tunnelbanarace",
+  "description": "Library that handles fractions as nominator/denominator",
+  "license": "MIT",
+  "require": {
+    "php": "7.*"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "7.2.7"
+  },
+  "autoload": {
+    "psr-4": {
+      "pbaczek\\TunnelbanaRace\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "pbaczek\\TunnelbanaRace\\tests\\": "tests/"
+    }
+  },
+  "config": {
+    "optimize-autoloader": true
+  }
+}
