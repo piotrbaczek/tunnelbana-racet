@@ -3,9 +3,7 @@
 namespace pbaczek\tunnelbanarace\tests\Stations;
 
 use DI\Container;
-use DI\DependencyException;
-use DI\NotFoundException;
-use pbaczek\tunnelbanarace\Connection;
+use pbaczek\tunnelbanarace\MathHelper;
 use PHPUnit\Framework\TestCase;
 
 final class ConnectionTestCase extends TestCase
@@ -20,13 +18,28 @@ final class ConnectionTestCase extends TestCase
     }
 
     /**
-     * @throws DependencyException
-     * @throws NotFoundException
+     * Test that we can calculate permutations
+     * @return void
      */
-    public function testBasicAlgorithm()
+    public function testPermutations(): void
     {
-        $firstStation = new class extends Connection{
+        $stations = ['Farsta Strand', 'Farsta', 'Årsta', 'Hökarängen'];
 
-        };
+        $perms = MathHelper::permutations($stations);
+        $permissions = iterator_to_array($perms);
+        $this->assertCount(24, $permissions);
+    }
+
+    /**
+     * Tests factorials are correct
+     * @return void
+     */
+    public function testFactorial(): void
+    {
+        $fiveFactorial = MathHelper::factorial(5);
+        $this->assertEquals(120, $fiveFactorial);
+
+        $zeroFactorial = MathHelper::factorial(0);
+        $this->assertEquals(1, $zeroFactorial);
     }
 }

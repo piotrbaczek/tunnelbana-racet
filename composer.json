@@ -4,6 +4,7 @@
   "license": "MIT",
   "require": {
     "php": "7.3.*",
+    "ext-gmp": "*",
     "php-di/php-di": "6.3.4",
     "ramsey/collection": "*"
   },
