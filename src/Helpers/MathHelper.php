@@ -1,6 +1,6 @@
 <?php
 
-namespace pbaczek\tunnelbanarace;
+namespace pbaczek\tunnelbanarace\Helpers;
 
 use Generator;
 
