@@ -2,6 +2,7 @@
 
 namespace pbaczek\tunnelbanarace\Stations;
 
+use pbaczek\tunnelbanarace\Connection;
 use pbaczek\tunnelbanarace\ConnectionsList;
 
 /**
@@ -15,14 +16,20 @@ abstract class AbstractStation
 
     /**
      * AbstractStation constructor.
-     * @param ConnectionsList $connectionsList
      */
-    public function __construct(ConnectionsList $connectionsList)
+    public function __construct()
     {
-        $this->connectionsList = $connectionsList;
+        $this->connectionsList = new ConnectionsList($this);
     }
 
     abstract public function getName(): string;
+
+    public function addDualConnections(AbstractStation $secondStation, int $timeInMinutes)
+    {
+        $timeInMinutes = abs($timeInMinutes);
+        $this->connectionsList->addConnection($secondStation, $timeInMinutes);
+        $secondStation->connectionsList->addConnection($this, $timeInMinutes);
+    }
 
     /**
      * @return ConnectionsList

@@ -2,15 +2,30 @@
 
 namespace pbaczek\tunnelbanarace;
 
-use Ramsey\Collection\AbstractCollection;
+use pbaczek\tunnelbanarace\Stations\AbstractStation;
 
-class ConnectionsList extends AbstractCollection
+class ConnectionsList
 {
-    /**
-     * Returns the type associated with this collection.
-     */
-    public function getType(): string
+    /** @var ConnectionsCollection $connections */
+    private $connections;
+
+    /** @var AbstractStation $station */
+    private $station;
+
+    public function __construct(AbstractStation $station)
     {
-        return Connection::class;
+        $this->connections = new ConnectionsCollection();
+        $this->station = $station;
+    }
+
+    public function addConnection(AbstractStation $connectingStation, int $timeInMinutes)
+    {
+        $connection = new Connection($connectingStation, $timeInMinutes);
+        $this->connections->add($connection);
+    }
+
+    public function getConnections()
+    {
+        return $this->connections;
     }
 }
