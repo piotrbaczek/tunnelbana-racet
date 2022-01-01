@@ -17,7 +17,7 @@ class Path
     public function addConnection(Connection $connection)
     {
         $this->path[] = $connection->getAbstractStation()->getName();
-        $this->time = $connection->getTimeInMinutes();
+        $this->time += $connection->getTimeInMinutes();
     }
 
     public function containsStation(AbstractStation $station): bool
@@ -25,7 +25,7 @@ class Path
         return in_array($station->getName(), $this->path) === true;
     }
 
-    public function getLastVisitedStation(): ?string
+    public function getLastVisitedStationName(): ?string
     {
         return end($this->path);
     }
