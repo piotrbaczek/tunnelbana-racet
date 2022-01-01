@@ -12,6 +12,14 @@ class PathCalculator
     /** @var $finishStation */
     private $finishStation;
 
+    /** @var PathsCollection $paths */
+    private $paths;
+
+    public function __construct()
+    {
+        $this->paths = new PathsCollection();
+    }
+
     public function addBaseStation(AbstractStation $baseStation)
     {
         $this->baseStation = $baseStation;
@@ -29,18 +37,21 @@ class PathCalculator
     public function calculate(): void
     {
         $path = new Path($this->baseStation);
-        $path = $this->calculateForConnection($this->baseStation, $this->finishStation, $path);
-        var_dump($path);
+        $this->paths = $this->calculateForConnection($this->baseStation, $this->finishStation, $path);
+        $this->paths = $this->paths->sort('getTime');
     }
 
-    private static function calculateForConnection(AbstractStation $currentStation, AbstractStation $finishStation, Path $path): Path
+    private static function calculateForConnection(AbstractStation $currentStation, AbstractStation $finishStation, Path $path): PathsCollection
     {
+        $pathsCollection = new PathsCollection();
+
         /** @var Connection $connection */
         foreach ($currentStation->getConnectionsList()->getConnections() as $connection) {
             //We reached final station
             if ($connection->getAbstractStation()->getName() === $finishStation->getName()) {
                 $path->addConnection($connection);
-                return $path;
+                $pathsCollection->add($path);
+                return $pathsCollection;
             }
 
             //We have already been here, are we in a loop?
@@ -51,9 +62,18 @@ class PathCalculator
             //Go through this station
             $path = clone $path;
             $path->addConnection($connection);
-            self::calculateForConnection($connection->getAbstractStation(), $finishStation, $path);
+            $subPathCollection = self::calculateForConnection($connection->getAbstractStation(), $finishStation, $path);
+            $pathsCollection = $pathsCollection->merge($subPathCollection);
         }
 
-        return $path;
+        return $pathsCollection;
+    }
+
+    /**
+     * @return PathsCollection
+     */
+    public function getPaths(): PathsCollection
+    {
+        return $this->paths;
     }
 }

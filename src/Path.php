@@ -29,4 +29,20 @@ class Path
     {
         return end($this->path);
     }
+
+    /**
+     * @return int
+     */
+    public function getTime(): int
+    {
+        return $this->time;
+    }
+
+    /**
+     * @return array
+     */
+    public function getPath(): array
+    {
+        return $this->path;
+    }
 }
