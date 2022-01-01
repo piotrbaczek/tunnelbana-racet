@@ -49,8 +49,9 @@ class PathCalculator
         foreach ($currentStation->getConnectionsList()->getConnections() as $connection) {
             //We reached final station
             if ($connection->getAbstractStation()->getName() === $finishStation->getName()) {
-                $path->addConnection($connection);
-                $pathsCollection->add($path);
+                $nextPath = clone $path;
+                $nextPath->addConnection($connection);
+                $pathsCollection->add($nextPath);
                 return $pathsCollection;
             }
 
@@ -60,9 +61,9 @@ class PathCalculator
             }
 
             //Go through this station
-            $path = clone $path;
-            $path->addConnection($connection);
-            $subPathCollection = self::calculateForConnection($connection->getAbstractStation(), $finishStation, $path);
+            $nextPath = clone $path;
+            $nextPath->addConnection($connection);
+            $subPathCollection = self::calculateForConnection($connection->getAbstractStation(), $finishStation, $nextPath);
             $pathsCollection = $pathsCollection->merge($subPathCollection);
         }
 

@@ -21,8 +21,6 @@ abstract class AbstractStation
         $this->connectionsList = new ConnectionsList($this);
     }
 
-    abstract public function getName(): string;
-
     public function addDualConnections(AbstractStation $secondStation, int $timeInMinutes)
     {
         $timeInMinutes = abs($timeInMinutes);
@@ -37,4 +35,10 @@ abstract class AbstractStation
     {
         return $this->connectionsList;
     }
+
+    /**
+     * Get name of the station
+     * @return string
+     */
+    abstract public function getName(): string;
 }
