@@ -2,7 +2,6 @@
 
 namespace pbaczek\tunnelbanarace\Stations;
 
-use pbaczek\tunnelbanarace\Connection;
 use pbaczek\tunnelbanarace\ConnectionsList;
 
 /**
