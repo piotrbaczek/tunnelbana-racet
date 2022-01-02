@@ -2,7 +2,7 @@
 
 namespace pbaczek\tunnelbanarace\Stations;
 
-use pbaczek\tunnelbanarace\ConnectionsList;
+use pbaczek\tunnelbanarace\Stations\AbstractStation\ConnectionsList;
 
 /**
  * Class AbstractStation

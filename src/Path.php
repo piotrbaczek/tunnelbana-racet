@@ -3,6 +3,7 @@
 namespace pbaczek\tunnelbanarace;
 
 use pbaczek\tunnelbanarace\Stations\AbstractStation;
+use pbaczek\tunnelbanarace\Stations\AbstractStation\Connection;
 
 class Path
 {
