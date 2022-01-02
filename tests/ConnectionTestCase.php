@@ -43,7 +43,7 @@ final class ConnectionTestCase extends TestCase
      * Test two paths one of which is faster
      * @return void
      */
-    public function testTwoPathsCase(): void
+    public function testTwoPathsWhereSecondOptimalCase(): void
     {
         $pathCalculator = new PathCalculator();
 
@@ -63,6 +63,8 @@ final class ConnectionTestCase extends TestCase
 
         $pathCalculator->calculate();
 
+        $this->assertCount(2, $pathCalculator->getPaths()->toArray());
+
         /** @var Path $fastestPath */
         $fastestPath = $pathCalculator->getPaths()->first();
 
@@ -80,5 +82,41 @@ final class ConnectionTestCase extends TestCase
         $this->assertEquals($thirdStation->getName(), $nextFastest->getLastVisitedStationName());
 
         $this->assertEquals([$firstStation->getName(), $secondStation->getName(), $thirdStation->getName()], $nextFastest->getPath());
+    }
+
+    /**
+     * Tests that second path gets cut off if length gets greater than currently found
+     * @return void
+     */
+    public function testTwoPathsWhereFirstOptimalCase(): void
+    {
+        $pathCalculator = new PathCalculator();
+
+        $firstStation = new StationOne();
+        $secondStation = new StationTwo();
+        $thirdStation = new StationThree();
+        $fourthStation = new StationFour();
+
+        $firstStation->addDualConnections($fourthStation, 5);
+        $fourthStation->addDualConnections($thirdStation, 10);
+        $firstStation->addDualConnections($secondStation, 60);
+        $secondStation->addDualConnections($thirdStation, 45);
+
+        $pathCalculator
+            ->addBaseStation($firstStation)
+            ->addFinishStation($thirdStation);
+
+        $pathCalculator->calculate();
+
+        $this->assertCount(1, $pathCalculator->getPaths()->toArray());
+
+        /** @var Path $fastestPath */
+        $fastestPath = $pathCalculator->getPaths()->first();
+
+        $this->assertInstanceOf(Path::class, $fastestPath);
+
+        $this->assertEquals(15, $fastestPath->getTime());
+
+        $this->assertEquals([$firstStation->getName(), $fourthStation->getName(), $thirdStation->getName()], $fastestPath->getPath());
     }
 }

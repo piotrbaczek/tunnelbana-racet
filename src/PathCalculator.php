@@ -42,7 +42,11 @@ class PathCalculator
         $this->paths = $this->paths->sort('getTime');
     }
 
-    private static function calculateForConnection(AbstractStation $currentStation, AbstractStation $finishStation, Path $path): PathsCollection
+    private static function calculateForConnection(
+        AbstractStation $currentStation,
+        AbstractStation $finishStation,
+        Path $path
+    ): PathsCollection
     {
         $pathsCollection = new PathsCollection();
 
@@ -65,6 +69,15 @@ class PathCalculator
             $nextPath = clone $path;
             $nextPath->addConnection($connection);
             $subPathCollection = self::calculateForConnection($connection->getAbstractStation(), $finishStation, $nextPath);
+
+            if ($pathsCollection->count() > 0) {
+                $foundSolutionLength = $pathsCollection->getMinimalPathLength();
+                if ($nextPath->getTime() > $foundSolutionLength) {
+                    //this solution is already longer than found
+                    continue;
+                }
+            }
+
             $pathsCollection = $pathsCollection->merge($subPathCollection);
         }
 
