@@ -16,36 +16,33 @@ class PathCalculator
     /** @var PathsCollection $paths */
     private $paths;
 
-    public function __construct()
+    /** @var int $requiredAmountOfStations */
+    private $requiredAmountOfStations;
+
+    public function __construct(AbstractStation $baseStation, AbstractStation $finishStation, int $requiredAmountOfStations)
     {
         $this->paths = new PathsCollection();
-    }
-
-    public function addBaseStation(AbstractStation $baseStation)
-    {
         $this->baseStation = $baseStation;
-
-        return $this;
-    }
-
-    public function addFinishStation(AbstractStation $finishStation)
-    {
         $this->finishStation = $finishStation;
-
-        return $this;
+        $this->requiredAmountOfStations = abs($requiredAmountOfStations);
     }
 
     public function calculate(): void
     {
-        $path = new Path($this->baseStation);
-        $this->paths = $this->calculateForConnection($this->baseStation, $this->finishStation, $path);
+        $this->paths = $this->calculateForConnection(
+            $this->baseStation,
+            $this->finishStation,
+            new Path($this->baseStation),
+            $this->requiredAmountOfStations
+        );
         $this->paths = $this->paths->sort('getTime');
     }
 
     private static function calculateForConnection(
         AbstractStation $currentStation,
         AbstractStation $finishStation,
-        Path $path
+        Path $path,
+        int $requiredAmountOfStations
     ): PathsCollection
     {
         $pathsCollection = new PathsCollection();
@@ -56,19 +53,36 @@ class PathCalculator
             if ($connection->getAbstractStation()->getName() === $finishStation->getName()) {
                 $nextPath = clone $path;
                 $nextPath->addConnection($connection);
-                $pathsCollection->add($nextPath);
-                return $pathsCollection;
+
+                if ($nextPath->getUniqueStationsCount() === $requiredAmountOfStations) {
+                    $pathsCollection->add($nextPath);
+                    return $pathsCollection;
+                }
+                continue;
             }
 
-            //We have already been here, are we in a loop?
-            if ($path->containsStation($connection->getAbstractStation()) === true) {
+            //We have already been there, are we in a loop?
+            $nextStation = $connection->getAbstractStation();
+            //This order matters
+            if ($currentStation->getConnectionsList()->getConnections()->count() > 1
+                && $path->containsStation($nextStation) === true
+            ) {
                 continue;
             }
 
             //Go through this station
             $nextPath = clone $path;
             $nextPath->addConnection($connection);
-            $subPathCollection = self::calculateForConnection($connection->getAbstractStation(), $finishStation, $nextPath);
+            $subPathCollection = self::calculateForConnection(
+                $connection->getAbstractStation(),
+                $finishStation,
+                $nextPath,
+                $requiredAmountOfStations
+            );
+
+            if ($subPathCollection->count() === 0) {
+                continue;
+            }
 
             if ($pathsCollection->count() > 0) {
                 $foundSolutionLength = $pathsCollection->getMinimalPathLength();

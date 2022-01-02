@@ -31,6 +31,11 @@ class Path
         return end($this->path);
     }
 
+    public function getUniqueStationsCount(): int
+    {
+        return count(array_unique($this->path));
+    }
+
     /**
      * @return int
      */
