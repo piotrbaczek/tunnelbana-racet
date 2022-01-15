@@ -26,6 +26,7 @@ class PathsCollection extends AbstractCollection
 
         /** @var Path $lowestPath */
         $lowestPath = $this->sort('getTime()', AbstractCollection::SORT_ASC)->first();
+
         return $lowestPath->getTime();
     }
 }
