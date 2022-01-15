@@ -10,6 +10,7 @@ final class ConnectionTestCase extends TestCase
 {
     /**
      * Tests that in linear case we can find the final station
+     * Main path 1 -> 2 -> 3
      * @return void
      */
     public function testBasicStationsTask(): void
@@ -36,7 +37,9 @@ final class ConnectionTestCase extends TestCase
     }
 
     /**
-     * Test two paths one of which is faster
+     * Test path with one return station connected to starting station
+     * Main path: 1 -> 2 -> 3
+     * Side path 1 -> 4 -> 1
      * @return void
      */
     public function testTwoPathsWhereSecondOptimalCase(): void
@@ -76,48 +79,11 @@ final class ConnectionTestCase extends TestCase
     }
 
     /**
-     * Tests that turn-and-back connection is taken into consideration
-     * @return void
-     */
-    public function testTwoPathsWhereFirstOptimalCase(): void
-    {
-        $firstStation = new StationOne();
-        $secondStation = new StationTwo();
-        $thirdStation = new StationThree();
-        $fourthStation = new StationFour();
-
-        $firstStation->addDualConnections($fourthStation, 5);
-        $firstStation->addDualConnections($secondStation, 60);
-        $secondStation->addDualConnections($thirdStation, 45);
-
-        $pathCalculator = new PathCalculator($firstStation, $thirdStation, 4);
-
-        $pathCalculator->calculate();
-
-        $this->assertCount(1, $pathCalculator->getPaths()->toArray());
-
-        /** @var Path $fastestPath */
-        $fastestPath = $pathCalculator->getPaths()->first();
-
-        $this->assertInstanceOf(Path::class, $fastestPath);
-
-        $this->assertEquals(115, $fastestPath->getTime());
-
-        $this->assertEquals(
-            [
-                $firstStation->getName(),
-                $fourthStation->getName(),
-                $firstStation->getName(),
-                $secondStation->getName(),
-                $thirdStation->getName()
-            ],
-            $fastestPath->getPath()
-        );
-    }
-
-    /**
      * Tests case where turn-and-back-connection is taken into consideration,
      * even if it's the second path
+     * Main path: 1 -> 2 -> 4 -> 5
+     * Side path: 2 -> 3 -> 2
+     * @return void
      */
     public function testCaseWithReturnStation(): void
     {
