@@ -2,9 +2,9 @@
 
 namespace pbaczek\tunnelbanarace\tests\Stations;
 
-use pbaczek\tunnelbanarace\Stations\AbstractStation;
+use pbaczek\tunnelbanarace\Stations\AbstractSubwayStation;
 
-class StationThree extends AbstractStation
+class StationThree extends AbstractSubwayStation
 {
     public function getName(): string
     {

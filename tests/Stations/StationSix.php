@@ -2,9 +2,9 @@
 
 namespace pbaczek\tunnelbanarace\tests\Stations;
 
-use pbaczek\tunnelbanarace\Stations\AbstractStation;
+use pbaczek\tunnelbanarace\Stations\AbstractSubwayStation;
 
-class StationSix extends AbstractStation
+class StationSix extends AbstractSubwayStation
 {
     /**
      * Get name of the station
