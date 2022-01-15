@@ -156,4 +156,52 @@ final class ConnectionTestCase extends TestCase
             $fastestPath->getPath()
         );
     }
+
+    /**
+     * Main path: 1 -> 2 -> 3 -> 4
+     * Side path 2 -> 5 -> 2
+     * Side path 3 -> 6 -> 3
+     * Solution path 1 -> 2 -> 5 -> 2 -> 3 -> 6 -> 3 -> 4
+     */
+    public function testPathWithSingleStationsJoinedAlongTheWay()
+    {
+        $firstStation = new StationOne();
+        $secondStation = new StationTwo();
+        $thirdStation = new StationThree();
+        $fourthStation = new StationFour();
+        $fifthStation = new StationFive();
+        $sixthStation = new StationSix();
+
+        $firstStation->addDualConnections($secondStation,1);
+        $secondStation->addDualConnections($thirdStation, 12);
+        $thirdStation->addDualConnections($fourthStation, 5);
+        $secondStation->addDualConnections($fifthStation, 11);
+        $thirdStation->addDualConnections($sixthStation, 7);
+
+        $pathCalculator = new PathCalculator($firstStation, $fourthStation, 6);
+        $pathCalculator->calculate();
+
+        $this->assertCount(1, $pathCalculator->getPaths()->toArray());
+
+        /** @var Path $fastestPath */
+        $fastestPath = $pathCalculator->getPaths()->first();
+
+        $this->assertInstanceOf(Path::class, $fastestPath);
+
+        $this->assertEquals(54, $fastestPath->getTime());
+
+        $this->assertEquals(
+            [
+                $firstStation->getName(),
+                $secondStation->getName(),
+                $fifthStation->getName(),
+                $secondStation->getName(),
+                $thirdStation->getName(),
+                $sixthStation->getName(),
+                $thirdStation->getName(),
+                $fourthStation->getName(),
+            ],
+            $fastestPath->getPath()
+        );
+    }
 }
