@@ -41,4 +41,10 @@ abstract class AbstractStation
      * @return string
      */
     abstract public function getName(): string;
+
+    /**
+     * Return type of the station
+     * @return string
+     */
+    abstract public function getType(): string;
 }
