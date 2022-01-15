@@ -76,7 +76,7 @@ final class ConnectionTestCase extends TestCase
     }
 
     /**
-     * Tests that second path gets cut off if length gets greater than currently found
+     * Tests that turn-and-back connection is taken into consideration
      * @return void
      */
     public function testTwoPathsWhereFirstOptimalCase(): void
@@ -115,7 +115,11 @@ final class ConnectionTestCase extends TestCase
         );
     }
 
-    public function testCaseWithReturnStation()
+    /**
+     * Tests case where turn-and-back-connection is taken into consideration,
+     * even if it's the second path
+     */
+    public function testCaseWithReturnStation(): void
     {
         $firstStation = new StationOne();
         $secondStation = new StationTwo();
