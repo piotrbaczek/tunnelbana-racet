@@ -1,9 +1,10 @@
 {
   "name": "pbaczek/tunnelbanarace",
-  "description": "Library that handles fractions as nominator/denominator",
+  "description": "Library that calculates shortest path according to tunnelbanaracet rules",
   "license": "MIT",
   "require": {
     "php": "7.3.*",
+    "ext-gmp": "*",
     "php-di/php-di": "6.3.4",
     "ramsey/collection": "*"
   },
