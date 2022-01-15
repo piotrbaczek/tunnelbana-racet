@@ -5,6 +5,7 @@ namespace pbaczek\tunnelbanarace\tests\Stations;
 use pbaczek\tunnelbanarace\Path;
 use pbaczek\tunnelbanarace\PathCalculator;
 use PHPUnit\Framework\TestCase;
+use pbaczek\tunnelbanarace\PathCalculator\FinishConditions\CountStations;
 
 final class ConnectionTestCase extends TestCase
 {
@@ -22,7 +23,8 @@ final class ConnectionTestCase extends TestCase
         $firstStation->addDualConnections($secondStation, 60);
         $secondStation->addDualConnections($thirdStation, 45);
 
-        $pathCalculator = new PathCalculator($firstStation, $thirdStation, 3);
+        $pathCalculator = new PathCalculator($firstStation, $thirdStation);
+        $pathCalculator->addFinishCondition(new CountStations(3));
 
         $pathCalculator->calculate();
 
@@ -53,7 +55,8 @@ final class ConnectionTestCase extends TestCase
         $secondStation->addDualConnections($thirdStation, 45);
         $firstStation->addDualConnections($fourthStation, 5);
 
-        $pathCalculator = new PathCalculator($firstStation, $thirdStation, 4);
+        $pathCalculator = new PathCalculator($firstStation, $thirdStation);
+        $pathCalculator->addFinishCondition(new CountStations(4));
 
         $pathCalculator->calculate();
 
@@ -98,7 +101,9 @@ final class ConnectionTestCase extends TestCase
         $secondStation->addDualConnections($fourthStation, 25);
         $fourthStation->addDualConnections($fifthStation, 30);
 
-        $pathCalculator = new PathCalculator($firstStation, $fifthStation, 5);
+        $pathCalculator = new PathCalculator($firstStation, $fifthStation);
+        $pathCalculator->addFinishCondition(new CountStations(5));
+
         $pathCalculator->calculate();
 
         $this->assertCount(1, $pathCalculator->getPaths()->toArray());
@@ -138,13 +143,15 @@ final class ConnectionTestCase extends TestCase
         $fifthStation = new StationFive();
         $sixthStation = new StationSix();
 
-        $firstStation->addDualConnections($secondStation,1);
+        $firstStation->addDualConnections($secondStation, 1);
         $secondStation->addDualConnections($thirdStation, 12);
         $thirdStation->addDualConnections($fourthStation, 5);
         $secondStation->addDualConnections($fifthStation, 11);
         $thirdStation->addDualConnections($sixthStation, 7);
 
-        $pathCalculator = new PathCalculator($firstStation, $fourthStation, 6);
+        $pathCalculator = new PathCalculator($firstStation, $fourthStation);
+        $pathCalculator->addFinishCondition(new CountStations(6));
+
         $pathCalculator->calculate();
 
         $this->assertCount(1, $pathCalculator->getPaths()->toArray());

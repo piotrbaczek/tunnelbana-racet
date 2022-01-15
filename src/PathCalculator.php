@@ -2,6 +2,9 @@
 
 namespace pbaczek\tunnelbanarace;
 
+use pbaczek\tunnelbanarace\Exceptions\NoFinishConditions;
+use pbaczek\tunnelbanarace\PathCalculator\FinishConditions\AbstractFinishCondition;
+use pbaczek\tunnelbanarace\PathCalculator\FinishConditions\FinishConditionsCollection;
 use pbaczek\tunnelbanarace\Stations\AbstractStation;
 use pbaczek\tunnelbanarace\Stations\AbstractStation\Connection;
 
@@ -16,33 +19,47 @@ class PathCalculator
     /** @var PathsCollection $paths */
     private $paths;
 
-    /** @var int $requiredAmountOfStations */
-    private $requiredAmountOfStations;
+    /** @var FinishConditionsCollection $finishConditions */
+    private $finishConditions;
 
-    public function __construct(AbstractStation $baseStation, AbstractStation $finishStation, int $requiredAmountOfStations)
+    public function __construct(AbstractStation $baseStation, AbstractStation $finishStation)
     {
         $this->paths = new PathsCollection();
         $this->baseStation = $baseStation;
         $this->finishStation = $finishStation;
-        $this->requiredAmountOfStations = abs($requiredAmountOfStations);
+        $this->finishConditions = new FinishConditionsCollection();
+    }
+
+    /**
+     * Add finish condition
+     * @param AbstractFinishCondition $finishCondition
+     * @return $this
+     */
+    public function addFinishCondition(AbstractFinishCondition $finishCondition): self
+    {
+        $this->finishConditions->add($finishCondition);
+
+        return $this;
     }
 
     public function calculate(): void
     {
+        if ($this->finishConditions->count() === 0) {
+            throw new NoFinishConditions('At least one finish condition must be provided.');
+        }
+
         $this->paths = $this->calculateForConnection(
             $this->baseStation,
             $this->finishStation,
             new Path($this->baseStation),
-            $this->requiredAmountOfStations
-        );
-        $this->paths = $this->paths->sort('getTime');
+            )
+            ->sort('getTime');
     }
 
-    private static function calculateForConnection(
+    private function calculateForConnection(
         AbstractStation $currentStation,
         AbstractStation $finishStation,
-        Path $path,
-        int $requiredAmountOfStations
+        Path $path
     ): PathsCollection
     {
         $pathsCollection = new PathsCollection();
@@ -54,10 +71,12 @@ class PathCalculator
                 $nextPath = clone $path;
                 $nextPath->addConnection($connection);
 
-                if ($nextPath->getUniqueStationsCount() === $requiredAmountOfStations) {
+                if ($this->checkFinishCondition($nextPath) === true) {
                     $pathsCollection->add($nextPath);
+
                     return $pathsCollection;
                 }
+
                 continue;
             }
 
@@ -76,8 +95,7 @@ class PathCalculator
             $subPathCollection = self::calculateForConnection(
                 $connection->getAbstractStation(),
                 $finishStation,
-                $nextPath,
-                $requiredAmountOfStations
+                $nextPath
             );
 
             if ($subPathCollection->count() === 0) {
@@ -96,6 +114,23 @@ class PathCalculator
         }
 
         return $pathsCollection;
+    }
+
+    /**
+     * Checks if finishing conditions has been met
+     * @param Path $nextPath
+     * @return bool
+     */
+    private function checkFinishCondition(Path $nextPath): bool
+    {
+        /** @var AbstractFinishCondition $finishCondition */
+        foreach ($this->finishConditions as $finishCondition) {
+            if ($finishCondition->checkCondition($nextPath) === false) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /**
