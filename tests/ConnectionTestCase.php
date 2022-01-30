@@ -33,7 +33,7 @@ final class ConnectionTestCase extends TestCase
         $this->assertInstanceOf(Path::class, $onlyPath);
 
         $this->assertEquals(105, $onlyPath->getTime());
-        $this->assertEquals($thirdStation->getName(), $onlyPath->getLastVisitedStationName());
+        $this->assertEquals($thirdStation->getName(), $onlyPath->getPath()->last()->getName());
 
         $this->assertEquals(
             [

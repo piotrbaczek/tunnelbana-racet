@@ -42,15 +42,6 @@ class Path
         return false;
     }
 
-    public function getLastVisitedStationName(): ?string
-    {
-        if ($this->path->count() === 0) {
-            return null;
-        }
-
-        return $this->path->last()->getName();
-    }
-
     public function getUniqueStationsCount(): int
     {
         return count(array_unique($this->path->getListOfStationNames()));
