@@ -31,6 +31,12 @@ class Path
         $this->time += $connection->getTimeInMinutes();
     }
 
+    /**
+     * Checks if path contains station by Station name.
+     * Returns true if it does, false if it doesn't
+     * @param AbstractStation $station
+     * @return bool
+     */
     public function containsStation(AbstractStation $station): bool
     {
         foreach ($this->path as $stationInPath) {
@@ -40,11 +46,6 @@ class Path
         }
 
         return false;
-    }
-
-    public function getUniqueStationsCount(): int
-    {
-        return count(array_unique($this->path->getListOfStationNames()));
     }
 
     /**

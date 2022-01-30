@@ -21,6 +21,11 @@ class CountStations extends AbstractFinishCondition
      */
     public function checkCondition(Path $path): bool
     {
-        return $path->getUniqueStationsCount() === $this->amountRequiredStations;
+        return self::getUniqueStationsCount($path) === $this->amountRequiredStations;
+    }
+
+    private static function getUniqueStationsCount(Path $path): int
+    {
+        return count(array_unique($path->getPath()->getListOfStationNames()));
     }
 }
