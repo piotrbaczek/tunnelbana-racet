@@ -4,36 +4,56 @@ namespace pbaczek\tunnelbanarace;
 
 use pbaczek\tunnelbanarace\Stations\AbstractStation;
 use pbaczek\tunnelbanarace\Stations\AbstractStation\Connection;
+use pbaczek\tunnelbanarace\Stations\StationsCollection;
 
 class Path
 {
-    private $path = [];
+    /** @var StationsCollection|AbstractStation[] $path */
+    private $path;
+
+    /** @var int $time */
     private $time = 0;
 
     public function __construct(AbstractStation $baseStation)
     {
-        $this->path[] = $baseStation->getName();
+        $clonedBaseStation = clone $baseStation;
+        $clonedBaseStation->getConnectionsList()->getConnections()->clear();
+
+        $this->path = new StationsCollection([$clonedBaseStation]);
     }
 
     public function addConnection(Connection $connection)
     {
-        $this->path[] = $connection->getAbstractStation()->getName();
+        $clonedStation = clone $connection->getAbstractStation();
+        $clonedStation->getConnectionsList()->getConnections()->clear();
+
+        $this->path->add($clonedStation);
         $this->time += $connection->getTimeInMinutes();
     }
 
     public function containsStation(AbstractStation $station): bool
     {
-        return in_array($station->getName(), $this->path) === true;
+        foreach ($this->path as $stationInPath) {
+            if ($station->getName() === $stationInPath->getName()) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public function getLastVisitedStationName(): ?string
     {
-        return end($this->path);
+        if ($this->path->count() === 0) {
+            return null;
+        }
+
+        return $this->path->last()->getName();
     }
 
     public function getUniqueStationsCount(): int
     {
-        return count(array_unique($this->path));
+        return count(array_unique($this->path->getListOfStationNames()));
     }
 
     /**
@@ -45,10 +65,15 @@ class Path
     }
 
     /**
-     * @return array
+     * @return StationsCollection
      */
-    public function getPath(): array
+    public function getPath(): StationsCollection
     {
         return $this->path;
+    }
+
+    public function __clone()
+    {
+        $this->path = clone $this->path;
     }
 }

@@ -35,7 +35,14 @@ final class ConnectionTestCase extends TestCase
         $this->assertEquals(105, $onlyPath->getTime());
         $this->assertEquals($thirdStation->getName(), $onlyPath->getLastVisitedStationName());
 
-        $this->assertEquals([$firstStation->getName(), $secondStation->getName(), $thirdStation->getName()], $onlyPath->getPath());
+        $this->assertEquals(
+            [
+                $firstStation->getName(),
+                $secondStation->getName(),
+                $thirdStation->getName()
+            ],
+            $onlyPath->getPath()->getListOfStationNames()
+        );
     }
 
     /**
@@ -77,7 +84,7 @@ final class ConnectionTestCase extends TestCase
                 $secondStation->getName(),
                 $thirdStation->getName()
             ],
-            $fastestPath->getPath()
+            $fastestPath->getPath()->getListOfStationNames()
         );
     }
 
@@ -124,7 +131,7 @@ final class ConnectionTestCase extends TestCase
                 $fourthStation->getName(),
                 $fifthStation->getName()
             ],
-            $fastestPath->getPath()
+            $fastestPath->getPath()->getListOfStationNames()
         );
     }
 
@@ -174,7 +181,7 @@ final class ConnectionTestCase extends TestCase
                 $thirdStation->getName(),
                 $fourthStation->getName(),
             ],
-            $fastestPath->getPath()
+            $fastestPath->getPath()->getListOfStationNames()
         );
     }
 }
