@@ -36,6 +36,11 @@ abstract class AbstractStation
         return $this->connectionsList;
     }
 
+    public function __clone()
+    {
+        $this->connectionsList = clone $this->connectionsList;
+    }
+
     /**
      * Get name of the station
      * @return string

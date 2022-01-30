@@ -28,4 +28,9 @@ class ConnectionsList
     {
         return $this->connections;
     }
+
+    public function __clone()
+    {
+        $this->connections = clone $this->connections;
+    }
 }
