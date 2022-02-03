@@ -1,10 +1,10 @@
 <?php
 
-
 namespace pbaczek\tunnelbanarace\Stations\Tunnelbana\Stations;
 
+use pbaczek\tunnelbanarace\Stations\AbstractSubwayStation;
 
-class Bandhagen
+class Bandhagen extends AbstractSubwayStation
 {
 
 }

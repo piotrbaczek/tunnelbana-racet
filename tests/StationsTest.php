@@ -9,6 +9,15 @@ use PHPUnit\Framework\TestCase;
 class StationsTest extends TestCase
 {
     /**
+     * Tests that station has a default name
+     */
+    public function testGetName(): void
+    {
+        $stationOne = new StationOne();
+        $this->assertEquals('StationOne', $stationOne->getName());
+    }
+
+    /**
      * Tests that cloning stations also copies their respective connections
      * @return void
      */

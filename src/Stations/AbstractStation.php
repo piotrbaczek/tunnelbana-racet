@@ -45,7 +45,11 @@ abstract class AbstractStation
      * Get name of the station
      * @return string
      */
-    abstract public function getName(): string;
+    public function getName(): string
+    {
+        $path = explode('\\', static::class);
+        return end($path);
+    }
 
     /**
      * Return type of the station
