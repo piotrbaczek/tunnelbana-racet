@@ -5,6 +5,8 @@ namespace pbaczek\tunnelbanarace\Stations\Tunnelbana;
 use pbaczek\tunnelbanarace\Stations\StationsCollection;
 use pbaczek\tunnelbanarace\Stations\Tunnelbana\Stations\Abrahamsberg;
 use pbaczek\tunnelbanarace\Stations\Tunnelbana\Stations\Alvik;
+use pbaczek\tunnelbanarace\Stations\Tunnelbana\Stations\Bagarmossen;
+use pbaczek\tunnelbanarace\Stations\Tunnelbana\Stations\Björkhagen;
 use pbaczek\tunnelbanarace\Stations\Tunnelbana\Stations\Blackeberg;
 use pbaczek\tunnelbanarace\Stations\Tunnelbana\Stations\Blåsut;
 use pbaczek\tunnelbanarace\Stations\Tunnelbana\Stations\Brommaplan;
@@ -14,6 +16,7 @@ use pbaczek\tunnelbanarace\Stations\Tunnelbana\Stations\Fridhemsplan;
 use pbaczek\tunnelbanarace\Stations\Tunnelbana\Stations\GamlaStan;
 use pbaczek\tunnelbanarace\Stations\Tunnelbana\Stations\Gubbängen;
 use pbaczek\tunnelbanarace\Stations\Tunnelbana\Stations\Gullmarsplan;
+use pbaczek\tunnelbanarace\Stations\Tunnelbana\Stations\Hammarbyhöjden;
 use pbaczek\tunnelbanarace\Stations\Tunnelbana\Stations\HässelbyGård;
 use pbaczek\tunnelbanarace\Stations\Tunnelbana\Stations\HässelbyStrand;
 use pbaczek\tunnelbanarace\Stations\Tunnelbana\Stations\Hökarängen;
@@ -21,6 +24,7 @@ use pbaczek\tunnelbanarace\Stations\Tunnelbana\Stations\Hötorget;
 use pbaczek\tunnelbanarace\Stations\Tunnelbana\Stations\Islandstorget;
 use pbaczek\tunnelbanarace\Stations\Tunnelbana\Stations\Johannelund;
 use pbaczek\tunnelbanarace\Stations\Tunnelbana\Stations\Kristineberg;
+use pbaczek\tunnelbanarace\Stations\Tunnelbana\Stations\Kärrtorp;
 use pbaczek\tunnelbanarace\Stations\Tunnelbana\Stations\Medborgarplatsen;
 use pbaczek\tunnelbanarace\Stations\Tunnelbana\Stations\Odenplan;
 use pbaczek\tunnelbanarace\Stations\Tunnelbana\Stations\Råcksta;
@@ -28,6 +32,7 @@ use pbaczek\tunnelbanarace\Stations\Tunnelbana\Stations\Rådmansgatan;
 use pbaczek\tunnelbanarace\Stations\Tunnelbana\Stations\Sandsborg;
 use pbaczek\tunnelbanarace\Stations\Tunnelbana\Stations\SanktEriksplan;
 use pbaczek\tunnelbanarace\Stations\Tunnelbana\Stations\Skanstull;
+use pbaczek\tunnelbanarace\Stations\Tunnelbana\Stations\Skarpnäck;
 use pbaczek\tunnelbanarace\Stations\Tunnelbana\Stations\Skogsyrkogården;
 use pbaczek\tunnelbanarace\Stations\Tunnelbana\Stations\Skärmarbrink;
 use pbaczek\tunnelbanarace\Stations\Tunnelbana\Stations\Slussen;
@@ -48,14 +53,18 @@ class TunnelbanaGenerator
         $tcentralen = new TCentralen();
         $stationsCollection->add($tcentralen);
 
-        $this->buildGreenLine($stationsCollection);
+        $this->buildMainGreenLine($stationsCollection);
+        $this->buildWestGreenLine($stationsCollection);
+        $this->buildEastGreenLine($stationsCollection);
+
         $this->buildRedLine($stationsCollection);
+
         $this->buildBlueLine($stationsCollection);
 
         return $stationsCollection;
     }
 
-    private function buildGreenLine(StationsCollection $stationsCollection): void
+    private function buildMainGreenLine(StationsCollection $stationsCollection): void
     {
         /** @var TCentralen $tCentralen */
         $tCentralen = $stationsCollection->where('getName', 'TCentralen')->first();
@@ -164,6 +173,34 @@ class TunnelbanaGenerator
         $vallingby->addDualConnections($johannelund, 5);
         $johannelund->addDualConnections($hasselbyGard, 5);
         $hasselbyGard->addDualConnections($hasselbyStrand, 5);
+    }
+
+    private function buildWestGreenLine(StationsCollection $stationsCollection): void
+    {
+        /** @var Skärmarbrink $skarmarbrink */
+        $skarmarbrink = $stationsCollection->where('getName', 'Skärmarbrink')->first();
+
+        $skarpnack = new Skarpnäck();
+        $stationsCollection->add($skarpnack);
+        $bagarmossen = new Bagarmossen();
+        $stationsCollection->add($bagarmossen);
+        $karrtorp = new Kärrtorp();
+        $stationsCollection->add($karrtorp);
+        $bjorkhagen = new Björkhagen();
+        $stationsCollection->add($bjorkhagen);
+        $hammarbyHojden = new Hammarbyhöjden();
+        $stationsCollection->add($hammarbyHojden);
+
+        $skarpnack->addDualConnections($bagarmossen, 5);
+        $bagarmossen->addDualConnections($karrtorp, 5);
+        $karrtorp->addDualConnections($bjorkhagen, 5);
+        $bjorkhagen->addDualConnections($hammarbyHojden, 5);
+        $hammarbyHojden->addDualConnections($skarmarbrink, 5);
+    }
+
+    private function buildEastGreenLine(StationsCollection $stationsCollection): void
+    {
+
     }
 
     private function buildRedLine(StationsCollection $stationsCollection): void
