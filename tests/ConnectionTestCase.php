@@ -184,4 +184,31 @@ final class ConnectionTestCase extends TestCase
             $fastestPath->getPath()->getListOfStationNames()
         );
     }
+
+    /**
+     * Currently failing test - not finding path
+     * @return void
+     */
+    public function testMoreThanOneStationReturn(): void
+    {
+        $firstStation = new StationOne();
+        $secondStation = new StationTwo();
+        $thirdStation = new StationThree();
+        $fourthStation = new StationFour();
+        $fifthStation = new StationFive();
+        $sixthStation = new StationSix();
+
+        $firstStation->addDualConnections($secondStation, 5);
+        $secondStation->addDualConnections($thirdStation, 5);
+        $thirdStation->addDualConnections($fourthStation, 5);
+        $fourthStation->addDualConnections($fifthStation, 5);
+        $secondStation->addDualConnections($sixthStation, 5);
+
+        $pathCalculator = new PathCalculator($firstStation, $sixthStation);
+        $pathCalculator->addFinishCondition(new CountStations(6));
+
+        $pathCalculator->calculate();
+
+        $this->assertCount(1, $pathCalculator->getPaths()->toArray());
+    }
 }
